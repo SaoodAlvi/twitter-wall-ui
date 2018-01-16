@@ -1,4 +1,5 @@
 const regl = require('regl')();
+const glslify = require('glslify');
 
 // Helper function to create a random float between
 // some defined range. This is used to create some
@@ -55,41 +56,8 @@ function updateData(data) {
 
 const drawDots = regl({
 
-  frag: `
-  precision mediump float;
-  uniform vec4 color;
-  void main () {
-    gl_FragColor = color;
-  }`,
-
-  vert: `
-  precision mediump float;
-  attribute vec2 position;
-  attribute float pointWidth;
-
-  uniform float stageWidth;
-  uniform float stageHeight;
-
-  // helper function to transform from pixel space to normalized
-  // device coordinates (NDC). In NDC (0,0) is the middle,
-  // (-1, 1) is the top left and (1, -1) is the bottom right.
-  // Stolen from Peter Beshai's great blog post:
-  // http://peterbeshai.com/beautifully-animate-points-with-webgl-and-regl.html
-  vec2 normalizeCoords(vec2 position) {
-    // read in the positions into x and y vars
-    float x = position[0];
-    float y = position[1];
-
-    return vec2(
-      2.0 * ((x / stageWidth) - 0.5),
-      // invert y to treat [0,0] as bottom left in pixel space
-      -(2.0 * ((y / stageHeight) - 0.5)));
-  }
-
-  void main () {
-    gl_PointSize = pointWidth;
-    gl_Position = vec4(normalizeCoords(position), 0, 1);
-  }`,
+  frag: glslify('./shaders/draw_dots.fs.glsl'),
+  vert: glslify('./shaders/draw_dots.vs.glsl'),
 
   attributes: {
     // There will be a position value for each point
