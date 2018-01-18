@@ -33,6 +33,8 @@
   "devDependencies": {
     "browserify": "^15.2.0",
     "budo": "^10.0.4",
-    "glslify": "^6.1.0"
+    "es2040": "^1.2.6",
+    "glslify": "^6.1.0",
+    "indexhtmlify": "^1.3.1"
   }
 }
