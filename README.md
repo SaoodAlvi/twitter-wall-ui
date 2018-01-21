@@ -11,5 +11,11 @@ npm install
 To run animation
 
 ```
-npm start
+npm run start
+```
+
+Build
+
+````
+npm run-script build
 ```
