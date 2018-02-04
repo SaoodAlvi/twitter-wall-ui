@@ -1,6 +1,19 @@
 const glsl = require('glslify')
+const mat4 = require('gl-mat4')
+const createCamera = require('perspective-camera')
+
+const TAU = 6.283185307179586
+const FOV = TAU * 0.1
+const ORIGIN = [0, 0, 0]
 
 module.exports = function (regl) {
+  const camera = createCamera({
+    fov: FOV,
+    near: 0.01,
+    far: 100,
+    position: [0, 0, 1]
+  })
+
   return regl({
     vert: glsl`
       precision mediump float;
@@ -27,6 +40,13 @@ module.exports = function (regl) {
     `,
     attributes: {
       position: [[-4, -4], [0, 4], [4, -4]]
+    },
+    uniforms: {
+      projection: () => camera.projection,
+      inverseProjection: () => mat4.invert([], camera.projection),
+      inverseView: () => mat4.invert([], camera.view),
+      view: () => camera.view,
+      time: ({time}) => time
     },
     count: 3
   })
