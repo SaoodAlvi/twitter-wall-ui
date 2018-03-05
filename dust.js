@@ -1,22 +1,10 @@
 const glsl = require('glslify')
 const mat4 = require('gl-mat4')
-const createCamera = require('perspective-camera')
+const camera = require('./camera')
 
 const DUST_COUNT = 1000
 
-const TAU = 6.283185307179586
-const FOV = TAU * 0.1
-const ORIGIN = [0, 0, 0]
-
-module.exports = function dustDrawer (regl) {
-
-  const camera = createCamera({
-    fov: FOV,
-    near: 0.01,
-    far: 100,
-    position: [0, 0, 1]
-  })
-
+module.exports = function (regl) {
   return regl({
     vert: glsl`
       precision mediump float;

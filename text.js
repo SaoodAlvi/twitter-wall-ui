@@ -1,55 +1,56 @@
 const glsl = require('glslify')
 const mat4 = require('gl-mat4')
-const createCamera = require('perspective-camera')
-const vectorizeText = require('vectorize-text')
 
-const DUST_COUNT = 1000
+module.exports = function (regl) {
 
-const TAU = 6.283185307179586
-const FOV = TAU * 0.1
-const ORIGIN = [0, 0, 0]
+  return function (camera) {
+    return regl({
+      frag: `
+        precision mediump float;
+        uniform sampler2D texture;
+        varying vec2 uv;
+        void main () {
+          gl_FragColor = texture2D(texture, uv);
+        }
+      `,
 
-module.exports = function dustDrawer(regl) {
+      vert: `
+        attribute vec2 position;
+        uniform mat4 projection, view;
+        varying vec2 uv;
+        void main () {
+          uv = position;
+          gl_Position = projection * view * vec4(1.0 - 2.0 * position, 0, 1);
+        }
+      `,
 
-  const camera = createCamera({
-    fov: FOV,
-    near: 0.01,
-    far: 100,
-    position: [0, 0, 1]
-  })
+      attributes: {
+        position: [
+          -2, 0,
+          0, -2,
+          2, 2]
+      },
 
-  const textMesh = vectorizeText('hello regl!', {
-    textAlign: 'center',
-    textBaseline: 'middle'
-  })
+      uniforms: {
+        view: () => camera.view,
+        projection: () => camera.projection,
+        texture: regl.texture(createText())
+      },
 
-  return regl({
-    frag: `
-      precision mediump float;
-      void main () {
-        gl_FragColor = vec4(1, 1, 1, 1);
-      }
-    `,
+      depth: {
+        enable: false
+      },
 
-    vert: `
-      attribute vec2 position;
-      uniform mat4 projection, view;
-      void main () {
-        gl_Position = projection * view * vec4(0.05 * position, 0, 1);
-      }
-    `,
+      count: 3
+    })
+  }
+}
 
-    attributes: {
-      position: textMesh.positions
-    },
-
-    elements: textMesh.edges,
-
-    uniforms: {
-      view: () => camera.view,
-      projection: () => camera.projection
-    },
-
-    depth: { enable: false }
-  })
+function createText () {
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  document.body.appendChild(canvas)
+  ctx.fillStyle = '#FF0000'
+  ctx.fillRect(0, 0, 20, 20)
+  return canvas
 }
