@@ -1,6 +1,6 @@
 enablePlugins(ScalaJSPlugin, WorkbenchPlugin)
 
-name := "Sketch"
+name := "twitter-wall-ui"
 
 version := "0.1-SNAPSHOT"
 
