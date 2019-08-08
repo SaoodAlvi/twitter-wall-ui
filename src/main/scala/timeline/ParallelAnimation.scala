@@ -1,0 +1,5 @@
+package timeline
+
+class ParallelAnimation {
+
+}

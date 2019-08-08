@@ -8,7 +8,6 @@ scalaVersion := "2.12.6"
 
 libraryDependencies ++= Seq(
   "org.scala-js" %%% "scalajs-dom" % "0.9.6",
-  "com.lihaoyi" %%% "scalatags" % "0.6.7"
+  "com.lihaoyi" %%% "scalatags" % "0.6.7",
+  "io.monix" %%% "monix" % "3.0.0-RC1"
 )
-
-jsDependencies += ProvidedJS / "paper-core.js"
